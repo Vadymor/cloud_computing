@@ -1,25 +1,39 @@
 terraform {
   required_providers {
-    docker = {
-      source  = "kreuzwerker/docker"
-      version = "~> 3.0.1"
+    google = {
+      source  = "hashicorp/google"
+      version = "4.51.0"
     }
   }
 }
 
-provider "docker" {}
+provider "google" {
+  credentials = file("/home/vadymor/PycharmProjects/centered-motif-229719-eca2d2c6ea45.json")
 
-resource "docker_image" "nginx" {
-  name         = "nginx"
-  keep_locally = false
+  project = "centered-motif-229719"
+  region  = "us-central1"
+  zone    = "us-central1-c"
 }
 
-resource "docker_container" "nginx" {
-  image = docker_image.nginx.image_id
-  name  = "tutorial"
+resource "google_compute_network" "vpc_network" {
+  name = "terraform-network"
+}
 
-  ports {
-    internal = 80
-    external = 8000
+resource "google_compute_instance" "vm_instance" {
+  name         = "terraform-instance"
+  machine_type = "f1-micro"
+  tags         = ["web", "dev"]
+
+  boot_disk {
+    initialize_params {
+      image = "cos-cloud/cos-stable"
+    }
+  }
+
+  network_interface {
+    network = google_compute_network.vpc_network.name
+    access_config {
+    }
   }
 }
+
