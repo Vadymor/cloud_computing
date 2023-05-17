@@ -3,21 +3,28 @@ import os
 import json
 
 
-url = "https://us-central1-centered-motif-229719.cloudfunctions.net/http_triggered_function"
+def http_request():
 
-output_stream = os.popen("gcloud auth print-identity-token")
-token = output_stream.read()
+    url = "https://us-central1-centered-motif-229719.cloudfunctions.net/http_triggered_function"
 
-headers = {
-    "Authorization": f"bearer {token[:-1]}",
-    "Content-Type": "application/json"
-}
+    # generate token
+    output_stream = os.popen("gcloud auth print-identity-token")
+    token = output_stream.read()[:-1]  # cut th last character, new line delimiter
 
-data = json.dumps({
-    "event_name": "20_event"
-})
+    headers = {
+        "Authorization": f"bearer {token}",
+        "Content-Type": "application/json"
+    }
 
-response = requests.post(url, headers=headers, data=data)
+    data = json.dumps({
+        "event_name": "20_event"
+    })
 
-print(response.text)
+    response = requests.post(url, headers=headers, data=data)
+
+    print(response.text)
+
+
+if __name__ == '__main__':
+    http_request()
 

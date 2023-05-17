@@ -52,7 +52,7 @@ Project schema:
 4. Created file in Cloud Storage
 
    ![](./img/file_on_storage.png)
-   And it content
+   And its` content
    ![](./img/file_content.png)
 
 ---
