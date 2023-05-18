@@ -7,7 +7,8 @@ from google.cloud import pubsub_v1
 from flask import Request
 
 publisher = pubsub_v1.PublisherClient()
-PROJECT_ID = os.getenv('My Project 20110')
+PROJECT_ID = 'centered-motif-229719'
+TOPIC_NAME = 'tf_event_stream'
 
 
 def http_triggered_function(request: Request):
@@ -26,7 +27,7 @@ def http_triggered_function(request: Request):
     request_id = str(uuid.uuid4())
     timestamp = int(time.time())
 
-    topic_path = 'projects/centered-motif-229719/topics/tf_event_stream'
+    topic_path = f'projects/{PROJECT_ID}/topics/{TOPIC_NAME}'
 
     message_json = json.dumps({
         "data": {

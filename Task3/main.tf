@@ -8,15 +8,15 @@ terraform {
 }
 
 provider "google" {
-  credentials = file("/home/vadymor/PycharmProjects/centered-motif-229719-eca2d2c6ea45.json")
+  credentials = file(var.credentials_path)
 
-  project = "centered-motif-229719"
+  project = var.project_id
   region  = "us-central1"
   zone    = "us-central1-c"
 }
 
 resource "google_storage_bucket" "tf_events_storage"{
-  name = "tf_events_storage"
+  name = var.bucket_name
   location = "US"
   uniform_bucket_level_access = "true"
   public_access_prevention = "enforced"
@@ -24,7 +24,7 @@ resource "google_storage_bucket" "tf_events_storage"{
 }
 
 resource "google_pubsub_topic" "tf_event_stream" {
-  name = "tf_event_stream"
+  name = var.stream_topic_name
 }
 
 resource "google_pubsub_subscription" "tf_event_stream-sub" {
@@ -41,7 +41,7 @@ resource "random_id" "bucket_prefix" {
 }
 
 resource "google_storage_bucket" "bucket" {
-  name                        = "${random_id.bucket_prefix.hex}-gcf-source" # Every bucket name must be globally unique
+  name                        = "${random_id.bucket_prefix.hex}-gcf-source"
   location                    = "US"
   uniform_bucket_level_access = true
 }
@@ -49,7 +49,7 @@ resource "google_storage_bucket" "bucket" {
 resource "google_storage_bucket_object" "object" {
   name   = "function-source.zip"
   bucket = google_storage_bucket.bucket.name
-  source = "./archived_functions/http_triggered_function.zip" # Add path to the zipped function source code
+  source = "./archived_functions/http_triggered_function.zip"
 }
 
 resource "google_cloudfunctions_function" "tf_http_triggered_function" {
@@ -57,7 +57,7 @@ resource "google_cloudfunctions_function" "tf_http_triggered_function" {
   region      = "us-central1"
 
   runtime     = "python39"
-  entry_point = "http_triggered_function" # Set the entry point
+  entry_point = "http_triggered_function"
   source_archive_bucket = google_storage_bucket.bucket.name
   source_archive_object = google_storage_bucket_object.object.name
 
@@ -74,7 +74,7 @@ resource "random_id" "bucket2_prefix" {
 }
 
 resource "google_storage_bucket" "bucket2" {
-  name                        = "${random_id.bucket2_prefix.hex}-gcf-source" # Every bucket name must be globally unique
+  name                        = "${random_id.bucket2_prefix.hex}-gcf-source"
   location                    = "US"
   uniform_bucket_level_access = true
 }
@@ -82,7 +82,7 @@ resource "google_storage_bucket" "bucket2" {
 resource "google_storage_bucket_object" "object2" {
   name   = "function-source.zip"
   bucket = google_storage_bucket.bucket2.name
-  source = "./archived_functions/event_store_function.zip" # Add path to the zipped function source code
+  source = "./archived_functions/event_store_function.zip"
 }
 
 resource "google_cloudfunctions_function" "tf_event_store_function" {
@@ -90,7 +90,7 @@ resource "google_cloudfunctions_function" "tf_event_store_function" {
   region      = "us-central1"
 
   runtime     = "python39"
-  entry_point = "hello_pubsub" # Set the entry point
+  entry_point = "hello_pubsub"
   source_archive_bucket = google_storage_bucket.bucket2.name
   source_archive_object = google_storage_bucket_object.object2.name
 
@@ -99,7 +99,7 @@ resource "google_cloudfunctions_function" "tf_event_store_function" {
   timeout    = 60
   event_trigger {
     event_type = "google.pubsub.topic.publish"
-    resource   = "projects/centered-motif-229719/topics/tf_event_stream"
+    resource   = "projects/${var.project_id}/topics/tf_event_stream"
   }
 
 }
