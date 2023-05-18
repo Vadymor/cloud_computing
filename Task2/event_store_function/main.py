@@ -9,7 +9,7 @@ def upload_blob(bucket_name, blob_text, destination_blob_name):
     bucket = storage_client.get_bucket(bucket_name)
     blob = bucket.blob(destination_blob_name)
 
-    blob.upload_from_string(blob_text)
+    blob.upload_from_string(blob_text, content_type='application/json')
 
     print(f'File uploaded to {destination_blob_name}')
 
