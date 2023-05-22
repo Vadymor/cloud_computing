@@ -18,7 +18,7 @@ However, it doesn't filter output:
 ![](./img/grype_doesnt_work.png)
 
 So, I created python [script](https://github.com/Vadymor/cloud_computing/blob/e48e4daa7c897883a13941d4b83c5975aa72abd0/Task6/grype_filter_output.py) 
-that parse command output and show filtered scan results:
+that parses command output and shows filtered scan results:
 ![](./img/grype_output.png)
 
 ## trivy
