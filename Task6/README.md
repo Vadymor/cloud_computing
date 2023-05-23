@@ -34,4 +34,10 @@ docker run --rm -v ~/.trivy:/root/.cache/ aquasec/trivy:0.41.0 image --severity 
 Results:
 ![](./img/trivy_output.png)
 
+## Conclusion
 
+Both scans are similar, but have some differences:
+1. Flask has `GHSA-m2qf-hxjv-5gpq` as VULNERABILITY by grype and has `CVE-2023-30861` by trivy.
+2. mlflow has `GHSA-x422-6qhv-p29g` as VULNERABILITY by grype and has `CVE-2023-2356` by trivy.
+
+Other vulnerabilities are exactly the same.
