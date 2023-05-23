@@ -3,6 +3,9 @@ resource "google_sql_database_instance" "db_instance" {
   name             = "events-database"
   database_version = "MYSQL_8_0"
   settings {
+    backup_configuration {
+        enabled = True
+    }
     tier = "db-f1-micro"
   }
 
@@ -52,6 +55,7 @@ resource "google_cloudfunctions_function" "tf_event_db_function" {
   source_archive_bucket = google_storage_bucket.bucket3.name
   source_archive_object = google_storage_bucket_object.object3.name
 
+  https_trigger_security_level = "SECURE_ALWAYS"
   max_instances = 1
   available_memory_mb   = 256
   timeout    = 60
