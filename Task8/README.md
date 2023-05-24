@@ -17,8 +17,10 @@
 As we can see, at a small number of function invocations 
 the most expensive resource is SQL storage, other resources cost approximately 0.0$.
 However, if the number of function invocations increases (more than ~1 mln) 
-the most expensive resource becomes Cloud Functions. 
+the most expensive resource becomes Cloud Functions.
+
 And it raises costs linearly, as you can see below:
+
 ![](./img/plot.png)
 
 Remarkably, the most expensive function is a function that stores events in Cloud SQL,
